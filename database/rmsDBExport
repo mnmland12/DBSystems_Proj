@@ -1,0 +1,1547 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 16.2
+-- Dumped by pg_dump version 16.2
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: employee; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.employee (
+    empid integer NOT NULL,
+    firstname text NOT NULL,
+    lastname text NOT NULL,
+    "position" text NOT NULL
+);
+
+
+ALTER TABLE public.employee OWNER TO postgres;
+
+--
+-- Name: employee_empid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.employee_empid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.employee_empid_seq OWNER TO postgres;
+
+--
+-- Name: employee_empid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.employee_empid_seq OWNED BY public.employee.empid;
+
+
+--
+-- Name: employeelocationassignment; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.employeelocationassignment (
+    empid integer,
+    locationid integer
+);
+
+
+ALTER TABLE public.employeelocationassignment OWNER TO postgres;
+
+--
+-- Name: inventory; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inventory (
+    locationid integer,
+    productid integer,
+    stockquantity integer NOT NULL,
+    reorderlevel integer NOT NULL
+);
+
+
+ALTER TABLE public.inventory OWNER TO postgres;
+
+--
+-- Name: location; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.location (
+    locationid integer NOT NULL,
+    locationname text NOT NULL,
+    address text NOT NULL,
+    city text NOT NULL,
+    state text NOT NULL
+);
+
+
+ALTER TABLE public.location OWNER TO postgres;
+
+--
+-- Name: location_locationid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.location_locationid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.location_locationid_seq OWNER TO postgres;
+
+--
+-- Name: location_locationid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.location_locationid_seq OWNED BY public.location.locationid;
+
+
+--
+-- Name: product; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.product (
+    productid integer NOT NULL,
+    productname text NOT NULL,
+    description text,
+    price numeric(10,2) NOT NULL,
+    size text
+);
+
+
+ALTER TABLE public.product OWNER TO postgres;
+
+--
+-- Name: product_productid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.product_productid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.product_productid_seq OWNER TO postgres;
+
+--
+-- Name: product_productid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.product_productid_seq OWNED BY public.product.productid;
+
+
+--
+-- Name: productssold; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.productssold (
+    saleid integer NOT NULL,
+    transactionid integer,
+    productid integer,
+    quantity integer NOT NULL,
+    totalprice numeric(10,2) NOT NULL
+);
+
+
+ALTER TABLE public.productssold OWNER TO postgres;
+
+--
+-- Name: productssold_saleid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.productssold_saleid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.productssold_saleid_seq OWNER TO postgres;
+
+--
+-- Name: productssold_saleid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.productssold_saleid_seq OWNED BY public.productssold.saleid;
+
+
+--
+-- Name: transaction; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.transaction (
+    transactionid integer NOT NULL,
+    date date NOT NULL,
+    total numeric(10,2) NOT NULL,
+    paymentmethod text NOT NULL,
+    empid integer NOT NULL,
+    locationid integer NOT NULL,
+    notes text
+);
+
+
+ALTER TABLE public.transaction OWNER TO postgres;
+
+--
+-- Name: transaction_transactionid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.transaction_transactionid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.transaction_transactionid_seq OWNER TO postgres;
+
+--
+-- Name: transaction_transactionid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.transaction_transactionid_seq OWNED BY public.transaction.transactionid;
+
+
+--
+-- Name: employee empid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.employee ALTER COLUMN empid SET DEFAULT nextval('public.employee_empid_seq'::regclass);
+
+
+--
+-- Name: location locationid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location ALTER COLUMN locationid SET DEFAULT nextval('public.location_locationid_seq'::regclass);
+
+
+--
+-- Name: product productid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product ALTER COLUMN productid SET DEFAULT nextval('public.product_productid_seq'::regclass);
+
+
+--
+-- Name: productssold saleid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.productssold ALTER COLUMN saleid SET DEFAULT nextval('public.productssold_saleid_seq'::regclass);
+
+
+--
+-- Name: transaction transactionid; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.transaction ALTER COLUMN transactionid SET DEFAULT nextval('public.transaction_transactionid_seq'::regclass);
+
+
+--
+-- Data for Name: employee; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.employee (empid, firstname, lastname, "position") FROM stdin;
+1	Jessica	Simpson	Manager
+2	Tim	Horton	Manager
+3	Rachel	Ray	Manager
+4	Theodore	Resnie	Manager
+5	Cameron	Thomas	Manager
+6	Violet	Cannon	Manager
+7	George	Pierce	Manager
+8	Kenny	Truney	Crew
+9	Ben	Saunders	Crew
+10	Tim	Rafter	Crew
+11	Cheryl	Grouch	Crew
+12	Kendrick	Simmons	Crew
+13	Makenna	Philly	Crew
+14	Hannah	Heart	Crew
+15	ALex	Borbon	Lead
+16	Candice	Bailey	Lead
+17	Cade	York	Lead
+18	Demir	Peach	Lead
+19	Daniel	Wekford	Lead
+20	Nigel	Nice	Lead
+21	Grady	Smith	Lead
+\.
+
+
+--
+-- Data for Name: employeelocationassignment; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.employeelocationassignment (empid, locationid) FROM stdin;
+1	1
+2	2
+3	3
+4	4
+5	5
+6	6
+7	7
+8	1
+9	2
+10	3
+11	4
+12	5
+13	6
+14	7
+15	1
+16	2
+17	3
+18	4
+19	5
+20	6
+21	7
+\.
+
+
+--
+-- Data for Name: inventory; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inventory (locationid, productid, stockquantity, reorderlevel) FROM stdin;
+8	84	54	50
+1	6	11	5
+1	42	11	5
+1	14	10	5
+1	39	10	5
+1	40	11	5
+1	84	8	3
+1	7	10	5
+1	8	10	5
+1	13	10	5
+1	15	10	5
+1	16	10	5
+1	17	10	5
+1	18	10	5
+1	19	10	5
+1	20	10	5
+1	21	10	5
+1	22	10	5
+1	23	10	5
+1	24	10	5
+1	25	10	5
+1	26	10	5
+1	27	10	5
+1	28	10	5
+1	29	10	5
+1	30	10	5
+1	33	10	5
+1	34	10	5
+1	35	10	5
+1	36	10	5
+1	37	10	5
+1	38	10	5
+1	41	10	5
+1	43	10	5
+1	45	10	5
+1	46	10	5
+1	47	10	5
+1	48	10	5
+1	51	10	5
+1	53	8	3
+1	56	8	3
+1	57	8	3
+1	58	8	3
+1	59	8	3
+1	60	8	3
+1	61	8	3
+1	62	8	3
+1	63	8	3
+1	64	8	3
+1	65	8	3
+1	66	8	3
+1	67	8	3
+1	69	8	3
+1	70	8	3
+1	71	8	3
+1	72	8	3
+1	73	8	3
+1	74	8	3
+1	75	8	3
+1	76	8	3
+1	77	8	3
+1	78	8	3
+1	80	8	3
+1	81	8	3
+1	82	8	3
+1	83	8	3
+2	53	8	3
+2	54	8	3
+2	55	8	3
+2	56	8	3
+2	57	8	3
+2	58	8	3
+2	59	8	3
+2	60	8	3
+2	61	8	3
+1	4	11	5
+8	5	48	50
+8	44	47	50
+8	11	49	50
+1	2	7	5
+8	10	48	50
+8	50	48	50
+8	52	49	50
+8	54	49	50
+1	52	10	5
+8	49	48	50
+8	9	49	50
+8	68	54	50
+1	44	10	5
+8	42	48	50
+8	40	48	50
+1	10	10	5
+8	7	50	50
+8	8	50	50
+1	31	11	5
+1	50	7	5
+1	5	10	5
+8	12	50	50
+8	13	50	50
+8	1	50	50
+8	15	50	50
+8	16	50	50
+8	18	50	50
+8	17	10	50
+8	19	50	50
+8	20	50	50
+8	21	50	50
+8	22	50	50
+8	23	50	50
+8	24	50	50
+8	25	50	50
+8	26	50	50
+8	27	50	50
+8	28	50	50
+8	29	50	50
+8	30	50	50
+8	4	48	50
+1	12	9	5
+8	33	50	50
+8	34	50	50
+8	35	50	50
+8	36	50	50
+8	37	50	50
+8	38	50	50
+1	32	11	5
+8	14	49	50
+8	41	50	50
+1	55	5	3
+8	43	50	50
+1	9	10	5
+8	45	50	50
+8	46	50	50
+8	47	50	50
+8	48	50	50
+1	68	8	3
+1	49	10	5
+8	51	50	50
+8	32	48	50
+8	53	50	50
+8	6	48	50
+8	55	50	50
+8	56	50	50
+8	57	50	50
+8	58	50	50
+8	59	50	50
+8	60	50	50
+8	61	50	50
+8	62	50	50
+8	63	50	50
+8	64	50	50
+8	65	50	50
+8	67	55	50
+8	39	49	50
+8	69	55	50
+8	70	55	50
+8	71	55	50
+8	72	55	50
+8	73	55	50
+8	74	55	50
+8	75	55	50
+8	76	55	50
+8	78	55	50
+8	79	55	50
+8	80	55	50
+8	81	55	50
+8	82	55	50
+8	83	55	50
+1	54	8	3
+8	31	48	50
+1	11	9	5
+1	1	5	5
+1	3	9	5
+1	79	7	3
+8	3	45	50
+2	62	8	3
+2	63	8	3
+2	64	8	3
+2	65	8	3
+2	66	8	3
+2	67	8	3
+2	68	8	3
+2	69	8	3
+2	70	8	3
+2	71	8	3
+2	72	8	3
+2	73	8	3
+2	74	8	3
+2	75	8	3
+2	76	8	3
+2	77	8	3
+2	78	8	3
+2	79	8	3
+2	80	8	3
+2	81	8	3
+2	82	8	3
+2	83	8	3
+2	84	8	3
+3	53	8	3
+3	54	8	3
+3	55	8	3
+3	56	8	3
+3	57	8	3
+3	58	8	3
+3	59	8	3
+3	60	8	3
+3	61	8	3
+3	62	8	3
+3	63	8	3
+3	64	8	3
+3	65	8	3
+3	66	8	3
+3	67	8	3
+3	68	8	3
+3	69	8	3
+3	70	8	3
+3	71	8	3
+3	72	8	3
+3	73	8	3
+3	74	8	3
+3	75	8	3
+3	76	8	3
+3	77	8	3
+3	78	8	3
+3	79	8	3
+3	80	8	3
+3	81	8	3
+3	82	8	3
+3	83	8	3
+3	84	8	3
+4	53	8	3
+4	54	8	3
+4	55	8	3
+4	56	8	3
+4	57	8	3
+4	58	8	3
+4	59	8	3
+4	60	8	3
+4	61	8	3
+4	62	8	3
+4	63	8	3
+4	64	8	3
+4	65	8	3
+4	66	8	3
+4	67	8	3
+4	68	8	3
+4	69	8	3
+4	70	8	3
+4	71	8	3
+4	72	8	3
+4	73	8	3
+4	74	8	3
+4	75	8	3
+4	76	8	3
+4	77	8	3
+4	78	8	3
+4	79	8	3
+4	80	8	3
+4	81	8	3
+4	82	8	3
+4	83	8	3
+4	84	8	3
+5	53	8	3
+5	54	8	3
+5	55	8	3
+5	56	8	3
+5	57	8	3
+5	58	8	3
+5	59	8	3
+5	60	8	3
+5	61	8	3
+5	62	8	3
+5	63	8	3
+5	64	8	3
+5	65	8	3
+5	66	8	3
+5	67	8	3
+5	68	8	3
+5	69	8	3
+5	70	8	3
+5	71	8	3
+5	72	8	3
+5	73	8	3
+5	74	8	3
+5	75	8	3
+5	76	8	3
+5	77	8	3
+5	78	8	3
+5	79	8	3
+5	80	8	3
+5	81	8	3
+5	82	8	3
+5	83	8	3
+5	84	8	3
+6	53	8	3
+6	54	8	3
+6	55	8	3
+6	56	8	3
+6	57	8	3
+6	58	8	3
+6	59	8	3
+6	60	8	3
+6	61	8	3
+6	62	8	3
+6	63	8	3
+6	64	8	3
+6	65	8	3
+6	66	8	3
+6	67	8	3
+6	68	8	3
+6	69	8	3
+6	70	8	3
+6	71	8	3
+6	72	8	3
+6	73	8	3
+6	74	8	3
+6	75	8	3
+6	76	8	3
+6	77	8	3
+6	78	8	3
+6	79	8	3
+6	80	8	3
+6	81	8	3
+6	82	8	3
+6	83	8	3
+6	84	8	3
+7	53	8	3
+7	54	8	3
+7	55	8	3
+7	56	8	3
+7	57	8	3
+7	58	8	3
+7	59	8	3
+7	60	8	3
+7	61	8	3
+7	62	8	3
+7	63	8	3
+7	64	8	3
+7	65	8	3
+7	66	8	3
+7	67	8	3
+7	68	8	3
+7	69	8	3
+7	70	8	3
+7	71	8	3
+7	72	8	3
+7	73	8	3
+7	74	8	3
+7	75	8	3
+7	76	8	3
+7	77	8	3
+7	78	8	3
+7	79	8	3
+7	80	8	3
+7	81	8	3
+7	82	8	3
+7	83	8	3
+7	84	8	3
+2	2	10	5
+2	3	10	5
+2	4	10	5
+2	5	10	5
+2	6	10	5
+2	7	10	5
+2	8	10	5
+2	9	10	5
+2	10	10	5
+2	11	10	5
+2	12	10	5
+2	13	10	5
+2	14	10	5
+2	15	10	5
+2	16	10	5
+2	17	10	5
+2	18	10	5
+2	19	10	5
+2	20	10	5
+2	21	10	5
+2	22	10	5
+2	23	10	5
+2	24	10	5
+2	25	10	5
+2	26	10	5
+2	27	10	5
+2	28	10	5
+2	29	10	5
+2	30	10	5
+2	31	10	5
+2	32	10	5
+2	33	10	5
+2	34	10	5
+2	35	10	5
+2	36	10	5
+2	37	10	5
+2	38	10	5
+2	39	10	5
+2	40	10	5
+2	41	10	5
+2	42	10	5
+2	43	10	5
+2	44	10	5
+2	45	10	5
+2	46	10	5
+2	47	10	5
+2	48	10	5
+2	49	10	5
+2	50	10	5
+2	51	10	5
+2	52	10	5
+3	2	10	5
+3	3	10	5
+3	4	10	5
+3	5	10	5
+3	6	10	5
+3	7	10	5
+3	8	10	5
+3	9	10	5
+3	10	10	5
+3	11	10	5
+3	12	10	5
+3	13	10	5
+3	14	10	5
+3	15	10	5
+3	16	10	5
+3	17	10	5
+3	18	10	5
+3	19	10	5
+3	20	10	5
+3	21	10	5
+3	22	10	5
+3	23	10	5
+3	24	10	5
+3	25	10	5
+3	26	10	5
+3	27	10	5
+3	28	10	5
+3	29	10	5
+3	30	10	5
+3	31	10	5
+3	32	10	5
+3	33	10	5
+3	34	10	5
+3	35	10	5
+3	36	10	5
+3	37	10	5
+3	38	10	5
+3	39	10	5
+3	40	10	5
+3	41	10	5
+3	42	10	5
+3	43	10	5
+3	44	10	5
+3	45	10	5
+3	46	10	5
+3	47	10	5
+3	48	10	5
+3	49	10	5
+3	50	10	5
+3	51	10	5
+3	52	10	5
+4	2	10	5
+5	2	10	5
+6	2	10	5
+7	2	10	5
+4	3	10	5
+5	3	10	5
+6	3	10	5
+7	3	10	5
+4	4	10	5
+5	4	10	5
+6	4	10	5
+7	4	10	5
+4	5	10	5
+5	5	10	5
+6	5	10	5
+7	5	10	5
+4	6	10	5
+5	6	10	5
+6	6	10	5
+7	6	10	5
+4	7	10	5
+5	7	10	5
+6	7	10	5
+7	7	10	5
+4	8	10	5
+5	8	10	5
+6	8	10	5
+7	8	10	5
+4	9	10	5
+5	9	10	5
+6	9	10	5
+7	9	10	5
+4	10	10	5
+5	10	10	5
+6	10	10	5
+7	10	10	5
+4	11	10	5
+5	11	10	5
+6	11	10	5
+7	11	10	5
+4	12	10	5
+5	12	10	5
+6	12	10	5
+7	12	10	5
+4	13	10	5
+5	13	10	5
+6	13	10	5
+7	13	10	5
+4	14	10	5
+5	14	10	5
+6	14	10	5
+7	14	10	5
+4	15	10	5
+5	15	10	5
+6	15	10	5
+7	15	10	5
+4	16	10	5
+5	16	10	5
+6	16	10	5
+7	16	10	5
+4	17	10	5
+5	17	10	5
+6	17	10	5
+7	17	10	5
+4	18	10	5
+5	18	10	5
+6	18	10	5
+7	18	10	5
+4	19	10	5
+5	19	10	5
+6	19	10	5
+7	19	10	5
+4	20	10	5
+5	20	10	5
+6	20	10	5
+7	20	10	5
+4	21	10	5
+5	21	10	5
+6	21	10	5
+6	1	9	5
+4	1	8	5
+5	1	7	5
+7	1	9	5
+7	21	10	5
+4	22	10	5
+5	22	10	5
+6	22	10	5
+7	22	10	5
+4	23	10	5
+5	23	10	5
+6	23	10	5
+7	23	10	5
+4	24	10	5
+5	24	10	5
+6	24	10	5
+7	24	10	5
+4	25	10	5
+5	25	10	5
+6	25	10	5
+7	25	10	5
+4	26	10	5
+5	26	10	5
+6	26	10	5
+7	26	10	5
+4	27	10	5
+5	27	10	5
+6	27	10	5
+7	27	10	5
+4	28	10	5
+5	28	10	5
+6	28	10	5
+7	28	10	5
+4	29	10	5
+5	29	10	5
+6	29	10	5
+7	29	10	5
+4	30	10	5
+5	30	10	5
+6	30	10	5
+7	30	10	5
+4	31	10	5
+5	31	10	5
+6	31	10	5
+7	31	10	5
+4	32	10	5
+5	32	10	5
+6	32	10	5
+7	32	10	5
+4	33	10	5
+5	33	10	5
+6	33	10	5
+7	33	10	5
+4	34	10	5
+5	34	10	5
+6	34	10	5
+7	34	10	5
+4	35	10	5
+5	35	10	5
+6	35	10	5
+7	35	10	5
+4	36	10	5
+5	36	10	5
+6	36	10	5
+7	36	10	5
+4	37	10	5
+5	37	10	5
+6	37	10	5
+7	37	10	5
+4	38	10	5
+5	38	10	5
+6	38	10	5
+7	38	10	5
+4	39	10	5
+5	39	10	5
+6	39	10	5
+7	39	10	5
+4	40	10	5
+5	40	10	5
+6	40	10	5
+7	40	10	5
+4	41	10	5
+5	41	10	5
+6	41	10	5
+7	41	10	5
+4	42	10	5
+5	42	10	5
+6	42	10	5
+7	42	10	5
+4	43	10	5
+5	43	10	5
+6	43	10	5
+7	43	10	5
+4	44	10	5
+5	44	10	5
+6	44	10	5
+7	44	10	5
+4	45	10	5
+5	45	10	5
+6	45	10	5
+7	45	10	5
+4	46	10	5
+5	46	10	5
+6	46	10	5
+7	46	10	5
+4	47	10	5
+5	47	10	5
+6	47	10	5
+7	47	10	5
+4	48	10	5
+5	48	10	5
+6	48	10	5
+7	48	10	5
+4	49	10	5
+5	49	10	5
+6	49	10	5
+7	49	10	5
+4	50	10	5
+5	50	10	5
+6	50	10	5
+7	50	10	5
+4	51	10	5
+5	51	10	5
+6	51	10	5
+7	51	10	5
+4	52	10	5
+5	52	10	5
+6	52	10	5
+7	52	10	5
+2	1	7	5
+3	1	7	5
+8	77	55	50
+8	2	41	50
+2	96	4	4
+1	95	7	4
+2	95	4	4
+3	93	4	4
+2	98	4	4
+8	93	47	25
+2	97	4	4
+3	96	4	4
+2	93	4	4
+8	96	46	25
+2	94	4	4
+3	94	4	4
+8	94	47	25
+3	98	4	4
+8	98	46	20
+3	97	4	4
+8	97	46	20
+3	95	4	4
+8	95	47	25
+2	105	0	0
+3	105	0	0
+4	105	0	0
+5	105	0	0
+6	105	0	0
+7	105	0	0
+1	105	5	5
+8	105	48	25
+8	66	55	50
+2	108	0	0
+2	109	0	0
+3	108	0	0
+3	109	0	0
+4	108	0	0
+4	109	0	0
+5	108	0	0
+5	109	0	0
+6	108	0	0
+1	90	9	4
+8	90	53	50
+1	94	9	4
+1	89	9	4
+8	89	54	50
+1	91	9	4
+8	91	54	50
+1	93	9	4
+1	97	9	4
+1	92	9	4
+8	92	54	50
+1	98	9	4
+1	96	9	4
+6	109	0	0
+7	108	0	0
+7	109	0	0
+1	108	4	4
+8	108	46	25
+1	109	4	4
+8	109	46	25
+2	89	10	6
+2	90	10	6
+2	91	10	6
+2	92	10	6
+3	89	8	4
+3	90	8	4
+3	91	8	4
+3	92	8	4
+4	89	10	8
+4	90	10	8
+4	91	10	8
+4	92	10	8
+5	89	0	0
+5	90	0	0
+5	91	0	0
+5	92	0	0
+6	89	4	4
+6	90	4	4
+6	91	4	4
+6	92	4	4
+7	89	0	0
+7	90	0	0
+7	91	0	0
+7	92	0	0
+4	93	0	8
+4	94	0	8
+4	95	0	8
+4	96	0	8
+5	93	0	0
+5	94	0	0
+5	95	0	0
+5	96	0	0
+6	93	0	4
+6	94	0	4
+6	95	0	4
+6	96	0	4
+7	93	0	0
+7	94	0	0
+7	95	0	0
+7	96	0	0
+4	97	0	8
+5	97	0	0
+6	97	0	4
+7	97	0	0
+4	98	0	8
+5	98	0	0
+6	98	0	4
+7	98	0	0
+\.
+
+
+--
+-- Data for Name: location; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.location (locationid, locationname, address, city, state) FROM stdin;
+1	Arrow Road	67 Arrow Road	Hilton Head Island	SC
+2	South Beach	232 South Sea Pines Drive	Hilton Head Island	SC
+3	Jakes Cargo	232 South Sea Pines Drive	Hilton Head Island	SC
+4	Tanger 2	1414 Fording Island Road	Bluffton	SC
+5	Blue Water	232 South Sea Pines Drive	Hilton Head Island	SC
+6	General Store	232 South Sea Pines Drive	Hilton Head Island	SC
+7	Key West	903 Simonton Street	Key West	FL
+8	Warehouse	69 Arrow Road	Hilton Head Island	SC
+\.
+
+
+--
+-- Data for Name: product; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.product (productid, productname, description, price, size) FROM stdin;
+1	Comfort Soft Short Sleeve Denim	\N	25.80	S
+2	Comfort Soft Short Sleeve Denim	\N	25.80	M
+3	Comfort Soft Short Sleeve Denim	\N	25.80	L
+4	Comfort Soft Short Sleeve Denim	\N	25.80	XL
+5	Comfort Soft Short Sleeve Chalky Mint	\N	25.80	XL
+6	Comfort Soft Short Sleeve Chalky Mint	\N	25.80	L
+7	Comfort Soft Short Sleeve Chalky Mint	\N	25.80	M
+8	Comfort Soft Short Sleeve Chalky Mint	\N	25.80	S
+9	Comfort Soft Short Sleeve Crimson	\N	25.80	S
+10	Comfort Soft Short Sleeve Crimson	\N	25.80	M
+11	Comfort Soft Short Sleeve Crimson	\N	25.80	L
+12	Comfort Soft Short Sleeve Crimson	\N	25.80	XL
+13	Comfort Soft Short Sleeve Flo Blue	\N	25.80	XL
+14	Comfort Soft Short Sleeve Flo Blue	\N	25.80	L
+15	Comfort Soft Short Sleeve Flo Blue	\N	25.80	M
+16	Comfort Soft Short Sleeve Flo Blue	\N	25.80	S
+17	Comfort Soft Short Sleeve Berry	\N	25.80	S
+18	Comfort Soft Short Sleeve Berry	\N	25.80	M
+19	Comfort Soft Short Sleeve Berry	\N	25.80	L
+20	Comfort Soft Short Sleeve Berry	\N	25.80	XL
+21	Comfort Soft Short Sleeve Light Green	\N	25.80	XL
+22	Comfort Soft Short Sleeve Light Green	\N	25.80	L
+23	Comfort Soft Short Sleeve Light Green	\N	25.80	M
+24	Comfort Soft Short Sleeve Light Green	\N	25.80	S
+25	Comfort Soft Short Sleeve Watermelon	\N	25.80	S
+26	Comfort Soft Short Sleeve Watermelon	\N	25.80	M
+27	Comfort Soft Short Sleeve Watermelon	\N	25.80	L
+28	Comfort Soft Short Sleeve Watermelon	\N	25.80	XL
+29	Comfort Soft Short Sleeve White	\N	25.80	XL
+30	Comfort Soft Short Sleeve White	\N	25.80	L
+31	Comfort Soft Short Sleeve White	\N	25.80	M
+32	Comfort Soft Short Sleeve White	\N	25.80	S
+33	Comfort Soft Long Sleeve Denim	\N	34.40	S
+34	Comfort Soft Long Sleeve Denim	\N	34.40	M
+35	Comfort Soft Long Sleeve Denim	\N	34.40	L
+36	Comfort Soft Long Sleeve Denim	\N	34.40	XL
+37	Comfort Soft Long Sleeve Chalky Mint	\N	34.40	XL
+38	Comfort Soft Long Sleeve Chalky Mint	\N	34.40	L
+39	Comfort Soft Long Sleeve Chalky Mint	\N	34.40	M
+40	Comfort Soft Long Sleeve Chalky Mint	\N	34.40	S
+41	Comfort Soft Long Sleeve Crimson	\N	34.40	S
+42	Comfort Soft Long Sleeve Crimson	\N	34.40	M
+43	Comfort Soft Long Sleeve Crimson	\N	34.40	L
+44	Comfort Soft Long Sleeve Crimson	\N	34.40	XL
+45	Comfort Soft Long Sleeve Flo Blue	\N	34.40	XL
+46	Comfort Soft Long Sleeve Flo Blue	\N	34.40	L
+47	Comfort Soft Long Sleeve Flo Blue	\N	34.40	M
+48	Comfort Soft Long Sleeve Flo Blue	\N	34.40	S
+49	Comfort Soft Long Sleeve Light Green	\N	34.40	S
+50	Comfort Soft Long Sleeve Light Green	\N	34.40	M
+51	Comfort Soft Long Sleeve Light Green	\N	34.40	L
+52	Comfort Soft Long Sleeve Light Green	\N	34.40	XL
+53	Comfort Soft Pocket Short Sleeve Butter	\N	27.90	XL
+54	Comfort Soft Pocket Short Sleeve Butter	\N	27.90	L
+55	Comfort Soft Pocket Short Sleeve Butter	\N	27.90	M
+56	Comfort Soft Pocket Short Sleeve Butter	\N	27.90	S
+57	Comfort Soft Pocket Short Sleeve Chambray	\N	27.90	S
+58	Comfort Soft Pocket Short Sleeve Chambray	\N	27.90	M
+59	Comfort Soft Pocket Short Sleeve Chambray	\N	27.90	L
+60	Comfort Soft Pocket Short Sleeve Chambray	\N	27.90	XL
+61	Comfort Soft Pocket Short Sleeve Denim	\N	27.90	XL
+62	Comfort Soft Pocket Short Sleeve Denim	\N	27.90	L
+63	Comfort Soft Pocket Short Sleeve Denim	\N	27.90	M
+64	Comfort Soft Pocket Short Sleeve Denim	\N	27.90	S
+65	Comfort Soft Pocket Short Sleeve Chalky Mint	\N	27.90	S
+66	Comfort Soft Pocket Short Sleeve Chalky Mint	\N	27.90	M
+67	Comfort Soft Pocket Short Sleeve Chalky Mint	\N	27.90	L
+68	Comfort Soft Pocket Short Sleeve Chalky Mint	\N	27.90	XL
+69	Comfort Soft Pocket Long Sleeve Flo Blue	\N	38.80	XL
+70	Comfort Soft Pocket Long Sleeve Flo Blue	\N	38.80	L
+71	Comfort Soft Pocket Long Sleeve Flo Blue	\N	38.80	M
+72	Comfort Soft Pocket Long Sleeve Flo Blue	\N	38.80	S
+73	Comfort Soft Pocket Long Sleeve Berry	\N	38.80	S
+74	Comfort Soft Pocket Long Sleeve Berry	\N	38.80	M
+75	Comfort Soft Pocket Long Sleeve Berry	\N	38.80	L
+76	Comfort Soft Pocket Long Sleeve Berry	\N	38.80	XL
+77	Comfort Soft Pocket Long Sleeve Seafoam	\N	38.80	XL
+78	Comfort Soft Pocket Long Sleeve Seafoam	\N	38.80	L
+79	Comfort Soft Pocket Long Sleeve Seafoam	\N	38.80	M
+80	Comfort Soft Pocket Long Sleeve Seafoam	\N	38.80	S
+81	Comfort Soft Pocket Long Sleeve Watermelon	\N	38.80	S
+82	Comfort Soft Pocket Long Sleeve Watermelon	\N	38.80	M
+83	Comfort Soft Pocket Long Sleeve Watermelon	\N	38.80	L
+84	Comfort Soft Pocket Long Sleeve Watermelon	\N	38.80	XL
+89	Sweatshirt Stonewash Denim		58.60	S
+90	Sweatshirt Stonewash Denim		58.60	M
+91	Sweatshirt Stonewash Denim		58.60	L
+92	Sweatshirt Stonewash Denim		58.60	XL
+93	Sweatshirt Stonewash Watermelon		58.60	S
+94	Sweatshirt Stonewash Watermelon		58.60	M
+95	Sweatshirt Stonewash Watermelon		58.60	L
+96	Sweatshirt Stonewash Watermelon		58.60	XL
+97	Sweatshirt Stonewash Light Grey		58.60	S
+98	Sweatshirt Stonewash Light Grey		58.60	M
+105	Sweatshirt Stonewash White		58.60	S
+107	Sweatshirt Stonewash White		58.60	M
+108	Sweatshirt Stonewash White		58.60	L
+109	Sweatshirt Stonewash White		58.60	XL
+\.
+
+
+--
+-- Data for Name: productssold; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.productssold (saleid, transactionid, productid, quantity, totalprice) FROM stdin;
+15	20	2	1	25.80
+16	20	10	1	25.80
+17	20	11	1	25.80
+18	21	1	1	25.80
+19	21	5	2	51.60
+20	21	10	1	25.80
+21	21	44	3	103.20
+22	22	50	2	68.80
+23	22	52	1	34.40
+24	22	54	1	27.90
+25	23	3	1	25.80
+26	23	49	2	68.80
+27	24	9	1	25.80
+28	24	68	1	27.90
+29	25	96	3	175.80
+30	25	97	2	117.20
+31	25	98	3	175.80
+32	26	84	1	38.80
+33	26	90	1	58.60
+34	27	6	1	25.80
+35	27	32	1	25.80
+36	28	40	1	34.40
+37	28	42	1	34.40
+38	29	4	1	25.80
+39	29	31	1	25.80
+40	31	1	2	51.60
+41	31	2	2	51.60
+42	31	3	2	51.60
+43	32	1	2	51.60
+44	32	2	3	77.40
+45	29	14	1	25.80
+46	29	1	1	25.80
+47	35	39	1	34.40
+48	36	11	1	25.80
+49	36	12	1	25.80
+50	38	50	3	103.20
+51	38	55	3	83.70
+52	38	79	1	38.80
+53	38	95	2	117.20
+54	39	1	2	51.60
+55	39	2	1	25.80
+56	39	3	2	51.60
+57	40	1	1	25.80
+58	40	3	1	25.80
+59	41	1	2	51.60
+60	41	2	3	77.40
+61	42	1	3	77.40
+62	42	2	2	51.60
+\.
+
+
+--
+-- Data for Name: transaction; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.transaction (transactionid, date, total, paymentmethod, empid, locationid, notes) FROM stdin;
+20	2024-04-11	75.00	Cash	8	1	test
+21	2024-04-11	204.00	Credit	8	1	
+22	2024-04-11	129.00	Cash	8	1	
+23	2024-04-11	93.00	Credit	8	1	
+24	2024-04-11	52.00	Cash	8	1	
+25	2024-04-13	468.80	Cash	8	1	
+26	2024-04-13	97.40	Cash	1	1	
+27	2024-04-14	51.60	Cash	1	1	
+28	2024-04-14	68.80	Credit	1	1	
+29	2024-04-14	25.80	Cash	1	1	
+30	2024-04-14	25.80	Cash	1	1	
+31	2024-04-14	154.80	Debit	1	1	
+32	2024-04-14	129.00	Cash	1	1	
+33	2024-04-14	25.80	Cash	1	1	
+34	2024-04-14	25.80	Cash	1	1	
+35	2024-04-14	34.40	Cash	1	1	
+36	2024-04-15	25.80	Cash	1	1	
+37	2024-04-15	25.80	Credit	1	1	
+38	2024-04-15	342.90	Cash	1	1	
+39	2024-04-15	129.00	Cash	1	1	
+40	2024-04-15	51.60	Cash	1	1	
+41	2024-04-16	129.00	Cash	1	1	demo transaction
+42	2024-04-16	129.00	Credit	1	1	demo transaction
+\.
+
+
+--
+-- Name: employee_empid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.employee_empid_seq', 53, true);
+
+
+--
+-- Name: location_locationid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.location_locationid_seq', 11, true);
+
+
+--
+-- Name: product_productid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.product_productid_seq', 109, true);
+
+
+--
+-- Name: productssold_saleid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.productssold_saleid_seq', 62, true);
+
+
+--
+-- Name: transaction_transactionid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.transaction_transactionid_seq', 42, true);
+
+
+--
+-- Name: employee employee_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.employee
+    ADD CONSTRAINT employee_pkey PRIMARY KEY (empid);
+
+
+--
+-- Name: location location_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location
+    ADD CONSTRAINT location_pkey PRIMARY KEY (locationid);
+
+
+--
+-- Name: product product_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product
+    ADD CONSTRAINT product_pkey PRIMARY KEY (productid);
+
+
+--
+-- Name: productssold productssold_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.productssold
+    ADD CONSTRAINT productssold_pkey PRIMARY KEY (saleid);
+
+
+--
+-- Name: transaction transaction_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.transaction
+    ADD CONSTRAINT transaction_pkey PRIMARY KEY (transactionid);
+
+
+--
+-- Name: employeelocationassignment employeelocationassignment_empid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.employeelocationassignment
+    ADD CONSTRAINT employeelocationassignment_empid_fkey FOREIGN KEY (empid) REFERENCES public.employee(empid);
+
+
+--
+-- Name: employeelocationassignment employeelocationassignment_locationid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.employeelocationassignment
+    ADD CONSTRAINT employeelocationassignment_locationid_fkey FOREIGN KEY (locationid) REFERENCES public.location(locationid);
+
+
+--
+-- Name: transaction fk_transaction_location; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.transaction
+    ADD CONSTRAINT fk_transaction_location FOREIGN KEY (locationid) REFERENCES public.location(locationid);
+
+
+--
+-- Name: inventory inventory_locationid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventory
+    ADD CONSTRAINT inventory_locationid_fkey FOREIGN KEY (locationid) REFERENCES public.location(locationid);
+
+
+--
+-- Name: inventory inventory_productid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventory
+    ADD CONSTRAINT inventory_productid_fkey FOREIGN KEY (productid) REFERENCES public.product(productid);
+
+
+--
+-- Name: productssold productssold_productid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.productssold
+    ADD CONSTRAINT productssold_productid_fkey FOREIGN KEY (productid) REFERENCES public.product(productid);
+
+
+--
+-- Name: productssold productssold_transactionid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.productssold
+    ADD CONSTRAINT productssold_transactionid_fkey FOREIGN KEY (transactionid) REFERENCES public.transaction(transactionid);
+
+
+--
+-- Name: transaction transaction_empid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.transaction
+    ADD CONSTRAINT transaction_empid_fkey FOREIGN KEY (empid) REFERENCES public.employee(empid);
+
+
+--
+-- Name: TABLE employee; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.employee TO mike;
+
+
+--
+-- Name: SEQUENCE employee_empid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.employee_empid_seq TO mike;
+
+
+--
+-- Name: TABLE employeelocationassignment; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.employeelocationassignment TO mike;
+
+
+--
+-- Name: TABLE inventory; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.inventory TO mike;
+
+
+--
+-- Name: TABLE location; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.location TO mike;
+
+
+--
+-- Name: SEQUENCE location_locationid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.location_locationid_seq TO mike;
+
+
+--
+-- Name: TABLE product; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.product TO mike;
+
+
+--
+-- Name: SEQUENCE product_productid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.product_productid_seq TO mike;
+
+
+--
+-- Name: TABLE productssold; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.productssold TO mike;
+
+
+--
+-- Name: SEQUENCE productssold_saleid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.productssold_saleid_seq TO mike;
+
+
+--
+-- Name: TABLE transaction; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.transaction TO mike;
+
+
+--
+-- Name: SEQUENCE transaction_transactionid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.transaction_transactionid_seq TO mike;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
